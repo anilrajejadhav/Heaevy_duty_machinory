@@ -1,69 +1,12 @@
-# Web API
+# Small, CPU-only stack for the TVH technical demo
 fastapi>=0.115,<1.0
 uvicorn[standard]>=0.30,<1.0
-
-# Configuration and validation
 pydantic>=2.9,<3.0
 pydantic-settings>=2.5,<3.0
 python-dotenv>=1.0,<2.0
-
-# RAG pipeline
-langchain-core>=0.3,<1.0
-langchain-text-splitters>=0.3,<1.0
-sentence-transformers>=3.0,<4.0
-faiss-cpu>=1.8,<2.0
-rank-bm25>=0.2,<1.0
-transformers>=4.45,<5.0
-torch>=2.4,<3.0
-
-# Document ingestion and data processing
 pypdf>=5.0,<6.0
-pandas>=2.2,<3.0
-numpy>=1.26,<3.0
-
-# Evaluation and utilities
 scikit-learn>=1.5,<2.0
 
-# Testing and code quality
+# Development
 pytest>=8.3,<9.0
-pytest-asyncio>=0.24,<1.0
 httpx>=0.27,<1.0
-black>=24.10,<26.0
-isort>=5.13,<7.0
-mypy>=1.13,<2.0
-*** Add File: .env.example
-# Application
-APP_NAME=Enterprise RAG API
-APP_ENV=development
-APP_HOST=0.0.0.0
-APP_PORT=8000
-LOG_LEVEL=INFO
-
-# Local storage paths, relative to the project root
-DATA_RAW_DIR=data/raw
-DATA_PROCESSED_DIR=data/processed
-SAMPLE_DOCS_DIR=data/sample_docs
-MODELS_DIR=models
-FAISS_INDEX_PATH=models/faiss.index
-FAISS_METADATA_PATH=models/faiss_metadata.json
-
-# Chunking
-CHUNK_SIZE=500
-CHUNK_OVERLAP=100
-
-# Embedding and retrieval
-EMBEDDING_MODEL_NAME=sentence-transformers/all-MiniLM-L6-v2
-RETRIEVAL_TOP_K=10
-RERANK_TOP_K=5
-
-# Generation
-LLM_PROVIDER=huggingface
-LLM_MODEL_NAME=google/flan-t5-base
-LLM_MAX_NEW_TOKENS=256
-LLM_TEMPERATURE=0.0
-
-# Optional external provider keys; leave empty unless the provider is enabled.
-OPENAI_API_KEY=
-AZURE_OPENAI_API_KEY=
-AZURE_OPENAI_ENDPOINT=
-OLLAMA_BASE_URL=http://localhost:11434
