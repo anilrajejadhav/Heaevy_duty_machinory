@@ -174,6 +174,21 @@ Before indexing, a typical response is:
 }
 ```
 
+## Optional: Streamlit Q&A interface
+
+Keep FastAPI running, then open a second terminal and start the chat interface:
+
+```powershell
+.\henv\Scripts\python.exe -m streamlit run streamlit_app.py
+```
+
+Open the local URL shown by Streamlit (normally `http://localhost:8501`). The
+interface sends questions to `POST /ask`, shows the answer, and displays the
+catalogue PDF, page number, excerpt, and reference numbers used as evidence.
+
+If FastAPI runs on another address, set the **FastAPI URL** field in the
+Streamlit sidebar, or start Streamlit with `API_BASE_URL` set to that address.
+
 ## Step 7: Index the labels catalogue
 
 This endpoint extracts text from the PDF and creates the local search index.
