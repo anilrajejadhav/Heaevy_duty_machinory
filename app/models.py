@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+from typing import Literal
 
 from pydantic import BaseModel, Field, field_validator
 
@@ -58,6 +59,21 @@ class SearchResponse(BaseModel):
     query: str
     results: list[SearchResult]
     message: str
+
+
+class AskResponse(BaseModel):
+    """A UI-friendly answer supported by catalogue search results."""
+
+    status: Literal[
+        "answer_found",
+        "general_reference_answer",
+        "catalogue_not_indexed",
+        "no_matching_information",
+    ]
+    question: str
+    answer: str
+    results: list[SearchResult]
+    source_url: str | None = None
 
 
 class RecommendationBuildRequest(BaseModel):
