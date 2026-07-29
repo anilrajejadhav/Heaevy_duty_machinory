@@ -67,6 +67,8 @@ class AskResponse(BaseModel):
     status: Literal[
         "answer_found",
         "general_reference_answer",
+        "ai_answer",
+        "ai_unavailable",
         "catalogue_not_indexed",
         "no_matching_information",
     ]

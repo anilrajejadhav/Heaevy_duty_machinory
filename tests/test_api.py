@@ -34,7 +34,26 @@ def test_ask_explains_when_the_catalogue_has_not_been_indexed() -> None:
         response = client.post("/ask", json={"query": "technical specifications"})
 
     assert response.status_code == 200
-    assert response.json()["status"] == "catalogue_not_indexed"
+    assert response.json()["status"] == "ai_unavailable"
+
+
+def test_ask_uses_general_ai_when_no_catalogue_answer_exists() -> None:
+    class FakeGeneralQuestionService:
+        enabled = True
+
+        @staticmethod
+        def answer(question: str) -> str:
+            assert question == "What is a hydraulic system?"
+            return "A hydraulic system transfers power through pressurized fluid."
+
+    with TestClient(app) as client:
+        app.state.search.build([])
+        app.state.general_questions = FakeGeneralQuestionService()
+        response = client.post("/ask", json={"query": "What is a hydraulic system?"})
+
+    body = response.json()
+    assert body["status"] == "ai_answer"
+    assert "pressurized fluid" in body["answer"]
 
 
 def test_ask_rejects_an_unreliable_match() -> None:
@@ -46,7 +65,7 @@ def test_ask_rejects_an_unreliable_match() -> None:
         response = client.post("/ask", json={"query": "forklift battery warning sticker"})
 
     body = response.json()
-    assert body["status"] == "no_matching_information"
+    assert body["status"] == "ai_unavailable"
     assert body["results"] == []
 
 

@@ -189,6 +189,21 @@ catalogue PDF, page number, excerpt, and reference numbers used as evidence.
 If FastAPI runs on another address, set the **FastAPI URL** field in the
 Streamlit sidebar, or start Streamlit with `API_BASE_URL` set to that address.
 
+### Answer general questions too (optional)
+
+The app always prioritizes indexed catalogue evidence. To let it answer general
+questions when no reliable catalogue result exists, add an OpenAI API key to
+your local `.env` file, then restart FastAPI:
+
+```env
+OPENAI_API_KEY=your_key_here
+OPENAI_MODEL=gpt-5
+```
+
+General AI answers are clearly labelled in the interface and are not presented
+as catalogue-backed information. Without a key, the app continues to answer
+catalogue questions normally and explains how to enable the general fallback.
+
 ## Step 7: Index the labels catalogue
 
 This endpoint extracts text from the PDF and creates the local search index.

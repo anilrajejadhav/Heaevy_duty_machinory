@@ -63,6 +63,31 @@ def _general_reference_answer(query: str) -> tuple[str, str] | None:
     return None
 
 
+def _ai_fallback(payload: SearchRequest, request: Request) -> AskResponse:
+    """Use the optional general AI service when the catalogue cannot answer."""
+    service = request.app.state.general_questions
+    if not service.enabled:
+        return AskResponse(
+            status="ai_unavailable",
+            question=payload.query,
+            answer=(
+                "I could not find this in the indexed catalogue. To answer general questions, "
+                "add OPENAI_API_KEY to your .env file and restart the server."
+            ),
+            results=[],
+        )
+    try:
+        answer = service.answer(payload.query)
+    except RuntimeError:
+        return AskResponse(
+            status="ai_unavailable",
+            question=payload.query,
+            answer="I could not find this in the catalogue, and the general AI service is unavailable right now.",
+            results=[],
+        )
+    return AskResponse(status="ai_answer", question=payload.query, answer=answer, results=[])
+
+
 @router.get("/", response_class=HTMLResponse, include_in_schema=False)
 def user_interface() -> str:
     """Serve a browser interface for asking catalogue questions."""
@@ -130,16 +155,7 @@ def ask(payload: SearchRequest, request: Request) -> AskResponse:
                 results=[],
                 source_url=source_url,
             )
-        return AskResponse(
-            status="catalogue_not_indexed",
-            question=payload.query,
-            answer=(
-                "Catalogue not indexed. Use POST /ingest with a PDF, TXT, or CSV file "
-                "before asking a question."
-            ),
-            results=[],
-            source_url=None,
-        )
+        return _ai_fallback(payload, request)
 
     limit = payload.limit or settings.search_result_limit
     results = request.app.state.search.search(payload.query, limit)
@@ -170,16 +186,7 @@ def ask(payload: SearchRequest, request: Request) -> AskResponse:
             source_url=source_url,
         )
 
-    return AskResponse(
-        status="no_matching_information",
-        question=payload.query,
-        answer=(
-            "I could not identify an exact catalogue answer for this question. "
-            "The closest pages are not sufficiently relevant, so no product or reference is shown. "
-            "Try an exact product name or reference number from the catalogue."
-        ),
-        results=[],
-    )
+    return _ai_fallback(payload, request)
 
 
 @router.post("/recommendations/build")

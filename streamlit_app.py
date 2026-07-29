@@ -24,6 +24,8 @@ def render_answer(message: dict[str, Any]) -> None:
             st.caption("Source: indexed catalogue")
         elif status == "general_reference_answer":
             st.caption("Source: trusted general reference (not the catalogue)")
+        elif status == "ai_answer":
+            st.caption("Source: general AI answer (not the catalogue)")
         elif status == "catalogue_not_indexed":
             st.warning("Index a PDF, TXT, or CSV through the FastAPI `/ingest` endpoint first.")
 
@@ -114,6 +116,8 @@ if question := st.chat_input("Ask about a part, label, safety marking, or refere
             st.caption("Source: indexed catalogue")
         elif assistant_message["status"] == "general_reference_answer":
             st.caption("Source: trusted general reference (not the catalogue)")
+        elif assistant_message["status"] == "ai_answer":
+            st.caption("Source: general AI answer (not the catalogue)")
         if assistant_message["source_url"]:
             st.link_button("Open source", assistant_message["source_url"])
         if assistant_message["results"]:

@@ -6,6 +6,7 @@ from pathlib import Path
 from fastapi import FastAPI
 
 from app.api.routes import router
+from app.generation.openai_service import GeneralQuestionService
 from app.recommendations.service import RecommendationService
 from app.retrieval.search import CatalogSearch
 from app.utils.config import PROJECT_ROOT, get_settings
@@ -22,6 +23,7 @@ async def lifespan(app: FastAPI):
     app.state.project_root = Path(PROJECT_ROOT)
     app.state.search = CatalogSearch()
     app.state.recommendations = RecommendationService()
+    app.state.general_questions = GeneralQuestionService(settings.openai_api_key, settings.openai_model)
     app.state.search.load(settings.index_path)
     app.state.recommendations.load(settings.recommendations_path)
     yield

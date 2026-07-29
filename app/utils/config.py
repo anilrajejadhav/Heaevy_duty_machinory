@@ -26,6 +26,8 @@ class Settings(BaseSettings):
     recommendations_path: Path = Path("models/recommendations.json")
     max_pages_per_pdf: int = Field(default=0, ge=0)
     search_result_limit: int = Field(default=10, ge=1, le=50)
+    openai_api_key: str | None = None
+    openai_model: str = "gpt-5"
 
     @model_validator(mode="after")
     def resolve_paths(self) -> "Settings":
